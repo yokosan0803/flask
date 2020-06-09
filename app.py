@@ -2,6 +2,7 @@ from flask import Flask,render_template
 # flaskのflask,render_templateを使用します宣言
 app= Flask(__name__)
 
+
 @app.route("/test")
 def test():
     name = "flask"
@@ -11,6 +12,14 @@ def test():
 def hello(text):
     name = "flask"
     return text + "さん、こんにちは"
+
+@app.route("/test2")
+def test2():
+    name = "flask"
+    return render_template("test2.html",name = name)
+
+
+
 
 
 
