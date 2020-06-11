@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- データのやり取りはフォームを使って行う
+actionにはpythonのルーティングを書く
+methodにはデータのやり取りの方法を書く。POST or GET
+HTTPメソッドは8個あるが、覚えておいた方がいいのは4つ
+GET 読み込み POST 追加 PUT 更新 DELETE 削除
+POSTで追加、更新、削除をできる -->
+
+<form action="/add" method="POST">
+    <input type="text" name="task" size="100" maxlength="100">
+    <input type="submit">
+</form>
+
+{% endblock %}
