@@ -1,7 +1,7 @@
 # sqlite3を使えるようにする
 import sqlite3
 
-from flask import Flask,render_template,request
+from flask import Flask,render_template,request,redirect
 # flaskのflask,render_templateを使用します宣言
 app= Flask(__name__)
 
@@ -75,7 +75,7 @@ def add_post():
 
 
 
-@app.route("/list")
+@app.route("/task_list")
 def task_list():
     conn = sqlite3.connect("flask.db")
     c = conn.cursor()
@@ -84,7 +84,43 @@ def task_list():
     for row in c.fetchall():
         task_list.append({"id":row[0],"task":row[1]})
     c.close()
-    return render_template("list.html", task_list = task_list)
+    return render_template("task_list.html", task_list = task_list)
+
+
+@app.route("/del/<int:id>")
+def del_task(id):
+    conn = sqlite3.connect("flask.db")
+    c = conn.cursor()
+    c.execute("delete from task where id = ?",(id,))
+    conn.commit()
+    conn.close()
+    return redirect("/task_list")
+# データベースに変更があるときはcommit()を書くよ
+# import追加するのを忘れないように redirect
+
+@app.route("/edit/<int:id>")
+def edit(id):
+    conn = sqlite3.connect("flask.db")
+    c = conn.cursor()
+    c.execute("select task from task where id = ?",(id,))
+    task = c.fetchone()
+    conn.close()
+    task = task[0]
+    item = {"id":id,"task":task}
+    print(task)
+    return render_template("edit.html",task = item)
+
+@app.route("/edit" , methods =["POST"])
+def update_task():
+    item_id = request.form.get("task_id")
+    item_id = int(item_id)
+    task = request.form.get("task")
+    conn = sqlite3.connect("flask.db")
+    c = conn.cursor()
+    c.execute("update task set task = ? where id = ?",(task ,item_id))
+    conn.commit()
+    conn.close()
+    return redirect("/task_list")
 
 
 
